@@ -1,0 +1,142 @@
+namespace: legalxplain.contracts.br
+version: 0.1.0-proposal
+language: pt-BR
+status: proposal_requires_legal_annotation
+unit: clause_or_paragraph
+mode: hierarchical_multilabel
+rules_are: exploratory_lexical_signals_not_a_classifier
+fallback: OUTROS_REVISAR
+normative_policy: retrieve_by_contract_date_jurisdiction_and_payer_do_not_apply_current_rules_automatically
+axes:
+  document_product:
+    - CARTAO_CREDITO_CONSIGNADO
+    - CARTAO_BENEFICIO_CONSIGNADO
+    - CARTAO_CREDITO_CONVENCIONAL
+    - CONTA_CARTAO_MULTIPRODUTO
+    - OUTRO_INDETERMINADO
+  document_instrument:
+    - TERMO_PROPOSTA_ADESAO
+    - REGULAMENTO_CONDICOES_GERAIS
+    - AUTORIZACAO_DESCONTO_SAQUE
+    - TERMO_CONSENTIMENTO_ESCLARECIDO
+    - CCB_INSTRUMENTO_CREDITO
+    - SEGURO_ASSISTENCIA
+    - COMPOSTO_OUTRO
+  paragraph_role:
+    - DEFINICAO
+    - DECLARACAO
+    - OBRIGACAO
+    - DIREITO
+    - AUTORIZACAO
+    - PROIBICAO
+    - CONDICAO
+    - PROCEDIMENTO
+    - EXCECAO
+  evidence_status:
+    - SUPORTADO_PELO_TRECHO
+    - CONTRADITO_PELO_TRECHO
+    - NAO_ABORDADO_NO_TEXTO_DISPONIVEL
+    - REQUER_CONTEXTO_EXTERNO
+  issue_questions:
+    - MODALIDADE_FOI_EXPLICITADA
+    - PAGAMENTO_MINIMO_AMORTIZA_TOTALMENTE
+    - COMO_SE_FORMALIZA_O_CONSENTIMENTO
+    - CUSTOS_E_ENCARGOS_FORAM_DESCRITOS
+    - COMO_FUNCIONA_O_DESCONTO_EM_FOLHA
+    - PARA_QUE_OS_DADOS_SAO_UTILIZADOS
+    - SEGURO_E_OPCIONAL
+    - COMO_CANCELAR_OU_QUITAR
+  case_context_only:
+    - NEGATIVACAO_ALEGADA
+    - DANOS_MATERIAIS_ALEGADOS
+    - INVALIDADE_CONTRATUAL_ALEGADA
+    - REVISAO_CLAUSULAS_ALEGADA
+    - RESCISAO_RESTITUICAO_PRETENDIDA
+    - CONTRATACAO_NAO_RECONHECIDA_ALEGADA
+    - SUPERENDIVIDAMENTO_ALEGADO
+    - NAO_INFORMADO
+clause_themes:
+  - id: OBJETO_MODALIDADE
+    name: Objeto e modalidade do produto
+    include: Identificação do produto, funcionamento geral e distinção cartão versus empréstimo.
+    exclude: Inferir intenção real do consumidor a partir do nome do formulário.
+    synthetic_example: Este instrumento disciplina a adesão ao cartão de crédito consignado.
+    patterns: ['cartao.{0,30}consignad', 'objeto.{0,35}contrat', 'modalidade.{0,30}credito']
+  - id: FORMALIZACAO_CONSENTIMENTO
+    name: Adesão, assinatura e consentimento
+    include: Aceite eletrônico, assinatura, biometria, leitura e testemunhas, capacidade e representação.
+    exclude: Concluir autenticidade, fraude ou consentimento efetivo somente porque há uma declaração.
+    synthetic_example: A adesão poderá ser confirmada por assinatura eletrônica.
+    patterns: ['assinatura', 'biometri', 'consentimento', 'analfabet', 'testemunh', 'aceite eletronico']
+  - id: MARGEM_CONSIGNACAO
+    name: Margem e desconto em folha ou benefício
+    include: Reserva de margem, autorização, fonte pagadora, insuficiência ou cessação do desconto.
+    exclude: Identificar RMC e RCC como sinônimos ou aplicar regras do INSS a todo servidor.
+    synthetic_example: Autorizo o desconto da parcela consignável em meu benefício.
+    patterns: ['margem consign', 'desconto.{0,30}folha', 'fonte pagadora', '\brmc\b', '\brcc\b']
+  - id: FATURA_AMORTIZACAO
+    name: Fatura, pagamento e amortização
+    include: Pagamento mínimo ou complementar, saldo remanescente, rotativo e evolução da dívida.
+    exclude: Declarar dívida perpétua sem demonstrativo, valores e histórico de pagamentos.
+    synthetic_example: O valor não pago da fatura integrará o saldo remanescente.
+    patterns: ['fatura', 'amortiza', 'pagamento minimo', 'saldo.{0,20}remanescente', 'rotativo']
+  - id: JUROS_CET_TARIFAS
+    name: Juros, custo efetivo total, encargos e tarifas
+    include: Taxas, CET, IOF, tarifas, multas, mora e informação de custos.
+    exclude: Julgar abusividade de uma taxa sem data, parâmetro e contexto aplicáveis.
+    synthetic_example: O custo efetivo total inclui juros e tributos da operação.
+    patterns: ['\bcet\b', 'custo efetivo', '\bjuros\b', 'encargos', 'tarifa', '\biof\b']
+  - id: SAQUE_LIMITE_CREDITO
+    name: Limites, saque e financiamento
+    include: Disponibilização do crédito, saque, transferência, limites e contratação de novas operações.
+    exclude: Confundir autorização contratual com prova de saque realizado.
+    synthetic_example: O saque depende da disponibilidade do limite contratado.
+    patterns: ['\bsaque\b', 'limite.{0,25}credito', 'limite.{0,25}cartao', 'financiamento']
+  - id: INADIMPLENCIA_COBRANCA
+    name: Inadimplência, cobrança e negativação
+    include: Atraso, vencimento antecipado, cobrança, débito substitutivo e cadastro de inadimplentes.
+    exclude: Inferir inscrição efetiva ou indevida de uma autorização padronizada.
+    synthetic_example: Na falta de pagamento, poderão ser adotadas medidas de cobrança.
+    patterns: ['inadimpl', 'vencimento antecipado', 'cobranca', 'negativa', 'serasa', '\bspc\b']
+  - id: DADOS_SCR_PRIVACIDADE
+    name: Dados pessoais, SCR e compartilhamento
+    include: Consulta e envio ao SCR, cadastros, sigilo, biometria como dado, finalidades e direitos.
+    exclude: Equiparar toda menção ao SCR à negativação ou presumir consentimento como única base legal.
+    synthetic_example: As informações da operação poderão ser registradas no SCR.
+    patterns: ['\bscr\b', 'dados pessoais', 'compartilh', 'sigilo', 'privacidade', 'lgpd', 'marketing']
+  - id: SEGUROS_BENEFICIOS
+    name: Seguros e serviços adicionais
+    include: Seguro prestamista, proteção, assistência, benefícios, opcionalidade e contratação acessória.
+    exclude: A expressão cartão benefício, sozinha, não prova presença de seguro nem venda casada.
+    synthetic_example: A contratação do seguro de proteção é facultativa.
+    patterns: ['\bseguro[s]?\b', 'seguradora', 'susep', 'prestamista', 'assistencia.{0,25}(funeral|residencial|medica)']
+  - id: CANCELAMENTO_QUITACAO_PORTABILIDADE
+    name: Cancelamento, quitação e portabilidade
+    include: Encerramento, rescisão, liquidação antecipada, reembolso, desistência e portabilidade.
+    exclude: Confundir cancelamento do cartão com extinção automática do saldo devedor.
+    synthetic_example: O titular poderá solicitar a liquidação antecipada do saldo.
+    patterns: ['cancelamento', 'cancelar', 'liquidacao antecipada', 'quitacao', 'portabilidade', 'rescisao', 'arrependimento']
+  - id: ALTERACAO_CESSAO_FORO
+    name: Alterações, cessão e solução de conflitos
+    include: Mudança do regulamento, comunicação, cessão do crédito, foro e mecanismos de disputa.
+    exclude: Declarar validade de eleição de foro ou alteração unilateral apenas pelo texto.
+    synthetic_example: A alteração das condições será comunicada pelos canais previstos.
+    patterns: ['cessao', 'ceder', 'foro', 'arbitrag', 'alterac.{0,30}(regulamento|contrat|condic)']
+  - id: INFORMACAO_ATENDIMENTO
+    name: Informação, atendimento e direitos do consumidor
+    include: Entrega de documentos, esclarecimentos, SAC, ouvidoria, acessibilidade e canais de reclamação.
+    exclude: Um telefone de SAC não comprova cumprimento integral do dever de informação.
+    synthetic_example: O consumidor poderá solicitar esclarecimentos ao serviço de atendimento.
+    patterns: ['ouvidoria', '\bsac\b', 'atendimento', 'dever de inform', 'esclarecimento', 'copia.{0,20}contrato']
+  - id: COMPLIANCE_PEP_PLD
+    name: Declarações regulatórias, PEP e prevenção à lavagem
+    include: Origem lícita de recursos, PEP, comunicações regulatórias e declarações cadastrais de compliance.
+    exclude: Não identificar alguém como PEP ou autor de ilícito por existir cláusula padronizada.
+    synthetic_example: O titular declara ciência das obrigações de prevenção à lavagem de dinheiro.
+    patterns: ['lavagem de dinheiro', 'politicamente expost', '\bpep\b', 'origem licita', 'atividade ilicita']
+  - id: GARANTIAS_RESPONSABILIDADE
+    name: Garantias e responsabilidades das partes
+    include: Aval, garantias, responsabilidade de representantes, perda do cartão e divisão de responsabilidades.
+    exclude: Não afirmar responsabilidade concreta sem comprovar o evento e a norma aplicável.
+    synthetic_example: O representante responderá pelos atos que excederem seus poderes.
+    patterns: ['\baval\b', '\bavalista\b', '\bgarantia[s]?\b', 'responsabil', 'poderes.{0,30}represent']
